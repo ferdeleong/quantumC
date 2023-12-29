@@ -39,3 +39,41 @@ for bit in range(num_bits):
   alice_circuit.append(basis_gate(qubit))
   
 # Step 4: Alice sends the Qubits to Bob trough a public quantum channel
+
+# Phase 2: Bob Receives
+
+# Step 5: Bob Randomly Chooses Bases
+
+bob_bases = choices(['Z', 'X'], k = num_bits)
+print('Bob\'s randomly chosen bases: ', bob_bases)
+
+bob_circuit = cirq.Circuit()
+
+for bit in range(num_bits):
+
+  basis_value = bob_bases[bit]
+  basis_gate = basis_gates[basis_value]
+
+  qubit = qubits[bit]
+  bob_circuit.append(basis_gate(qubit))
+  
+# Step 6: Bob measures Qubits
+
+bob_circuit.append(cirq.measure(qubits, key = 'bob key'))
+
+print(bob_circuit)
+
+# Step 7: Bob creates a Key
+
+bb84_circuit = alice_circuit + bob_circuit
+
+sim = cirq.Simulator()
+results = sim.run(bb84_circuit)
+bob_key = results.measurements['bob key'][0]
+
+print('\nBob\'s initial key: ', bob_key)
+
+# Phase 3: Alice and Bob Compare Bases
+
+
+
