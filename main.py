@@ -1,4 +1,3 @@
-!pip install cirq --quiet
 import cirq
 from random import choices
 import binascii
@@ -75,5 +74,29 @@ print('\nBob\'s initial key: ', bob_key)
 
 # Phase 3: Alice and Bob Compare Bases
 
+final_alice_key = []
+final_bob_key = []
 
+for bit in range(num_bits):
+
+  if alice_bases[bit] == bob_bases[bit]:
+    final_alice_key.append(alice_key[bit])
+    final_bob_key.append(bob_key[bit])
+
+print('\nAlice\'s key: ', final_alice_key)
+print('Bob\'s key: ', final_bob_key)
+
+# Step 9: Alice and Bob compare the first bits of the key
+
+num_bits_to_compare = int(len(final_alice_key) * .5)
+if final_alice_key[0:num_bits_to_compare] == final_bob_key[0:num_bits_to_compare]:
+  final_alice_key = final_alice_key[num_bits_to_compare:]
+  final_bob_key = final_bob_key[num_bits_to_compare:]
+
+  print('\n\nWe can use our keys!')
+  print('Alice Key: ', final_alice_key)
+  print('Bob Key: ', final_bob_key)
+
+else:
+  print('\n\nEve was listening, we need to use a different channel!')
 
