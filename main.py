@@ -99,4 +99,47 @@ if final_alice_key[0:num_bits_to_compare] == final_bob_key[0:num_bits_to_compare
 
 else:
   print('\n\nEve was listening, we need to use a different channel!')
+  
+# Part 2: Alice, Bob and Eve's Measure Attack
+
+encode_gates = {0: cirq.I, 1: cirq.X}
+basis_gates = {'Z': cirq.I, 'X': cirq.H}
+
+num_bits = 100
+qubits = cirq.NamedQubit.range(num_bits, prefix = 'q')
+
+alice_key = choices([0, 1], k = num_bits)
+
+print('Alice\'s initial key: ', alice_key)
+
+alice_bases = choices(['Z', 'X'], k = num_bits)
+
+print('\nAlice\'s randomly chosen bases: ', alice_bases)
+
+alice_circuit = cirq.Circuit()
+
+for bit in range(num_bits):
+
+  encode_value = alice_key[bit]
+  encode_gate = encode_gates[encode_value]
+
+  basis_value = alice_bases[bit]
+  basis_gate = basis_gates[basis_value]
+
+  qubit = qubits[bit]
+  alice_circuit.append(encode_gate(qubit))
+  alice_circuit.append(basis_gate(qubit))
+  
+
+eve_circuit = cirq.Circuit()
+eve_circuit.append(cirq.measure(qubits, key = 'eve key'))
+
+eve_intercept_circuit = alice_circuit + eve_circuit
+
+sim = cirq.Simulator()
+results = sim.run(eve_intercept_circuit)
+eve_key = results.measurements['eve key'][0]
+
+print('\nEve\'s initial key: ', eve_key)
+
 
