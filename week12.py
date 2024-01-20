@@ -21,3 +21,10 @@ for i in range(4):
   my_circuit.append(gate(my_qubits[i]))
 
 my_circuit
+
+
+my_qubits = cirq.NamedQubit.range(3, prefix="q")
+my_circuit = cirq.Circuit()
+
+my_circuit.append(cirq.H.on_each(my_qubits))
+my_circuit
