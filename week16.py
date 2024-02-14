@@ -72,3 +72,25 @@ def make_oracle(qubits, ancilla, marked_bitstring):
     circuit.append(cirq.measure(*qubits, key="result"))
 
     return circuit
+
+
+"""Simulate the circuit for Grover's algorithm and check the output."""
+# Helper function.
+def bitstring(bits):
+    return "".join(str(int(b)) for b in bits)
+
+def binary_labels(num_qubits):
+    return [bin(x)[2:].zfill(num_qubits) for x in range(2 ** num_qubits)]
+
+# Sample from the circuit a couple times.
+simulator = cirq.Simulator()
+result = simulator.run(circuit, repetitions = 1024)
+
+# Look at the sampled bitstrings.
+frequencies = result.histogram(key="result", fold_func=bitstring)
+print('Sampled results:\n{}'.format(frequencies))
+
+# Check if we actually found the secret value.
+most_common_bitstring = frequencies.most_common(1)[0][0]
+print("\nMost common bitstring: {}".format(most_common_bitstring))
+print("Found a match? {}".format(most_common_bitstring == bitstring(marked_bitstring)))
